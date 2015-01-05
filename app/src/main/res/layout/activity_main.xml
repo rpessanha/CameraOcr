@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" 
     android:orientation="vertical">
@@ -9,20 +9,33 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:hint="@string/edit_message"/>-->
-    <Button
+
+   <!-- <Button
         android:id="@+id/buttonClick"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_send"
         android:onClick="onClick"
         android:layout_gravity="center_horizontal"
-        android:layout_weight="1" />
-
+        android:layout_weight="1" />-->
+    <ImageButton
+        android:layout_width="147dp"
+        android:layout_height="147dp"
+        android:id="@+id/buttonClick"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/photoclick"
+        android:onClick="onClick"
+        android:background="@null"/>
     <FrameLayout
         android:id="@+id/preview"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="3"></FrameLayout>
+        android:layout_height="fill_parent">
+        <!--android:layout_gravity="center_horizontal"
+        android:layout_weight="3"-->
 
-</LinearLayout>
+
+
+
+    </FrameLayout>
+
+</FrameLayout>

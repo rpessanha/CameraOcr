@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -25,14 +26,15 @@ public class MainActivity extends Activity {
     private Camera camera;
     private int cameraId = 0;
     Preview preview;
-    Button buttonClick;
+    ImageButton buttonClick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         preview = new Preview(this);
-        ((FrameLayout) findViewById(R.id.preview)).addView(preview);
-        buttonClick = (Button) findViewById(R.id.buttonClick);
+        ((FrameLayout) findViewById(R.id.preview)).addView(preview,0);
+        buttonClick = (ImageButton) findViewById(R.id.buttonClick);
+        buttonClick.bringToFront();
         buttonClick.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 preview.camera.takePicture(shutterCallback, rawCallback,

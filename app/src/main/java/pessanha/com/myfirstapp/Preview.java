@@ -59,7 +59,7 @@ public class Preview  extends SurfaceView implements SurfaceHolder.Callback {
         // Surface will be destroyed when we return, so stop the preview.
         // Because the CameraDevice object is not a shared resource, it's very
         // important to release it when the activity is paused.
-        camera.release();
+        //camera.release();
         camera.stopPreview();
         camera = null;
     }
