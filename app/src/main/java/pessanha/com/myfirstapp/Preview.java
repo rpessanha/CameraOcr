@@ -60,7 +60,9 @@ public class Preview  extends SurfaceView implements SurfaceHolder.Callback {
         // Because the CameraDevice object is not a shared resource, it's very
         // important to release it when the activity is paused.
         //camera.release();
+        this.getHolder().removeCallback(this);
         camera.stopPreview();
+        camera.release();
         camera = null;
     }
 
@@ -72,6 +74,7 @@ public class Preview  extends SurfaceView implements SurfaceHolder.Callback {
         List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
         Camera.Size cs = sizes.get(0);
         parameters.setPreviewSize(cs.width, cs.height);
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         camera.setParameters(parameters);
         camera.startPreview();
     }
