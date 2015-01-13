@@ -12,6 +12,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.util.Log;
@@ -72,9 +73,12 @@ public class Preview  extends SurfaceView implements SurfaceHolder.Callback {
         Camera.Parameters parameters = camera.getParameters();
         /* devemos verificar se o size é supported*/
         List<Camera.Size> sizes = parameters.getSupportedPreviewSizes();
+        parameters.setPictureFormat(PixelFormat.JPEG);
         Camera.Size cs = sizes.get(0);
         parameters.setPreviewSize(cs.width, cs.height);
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        parameters.setPictureSize(cs.width, cs.height);
+        //parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        parameters.setFocusMode("auto");
         camera.setParameters(parameters);
         camera.startPreview();
     }

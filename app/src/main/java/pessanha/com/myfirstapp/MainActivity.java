@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
     ImageButton buttonClick;
     private Context context;
     private static final String TESSBASE_PATH = "/storage/external_sd/Pictures/";
-    private static final String DEFAULT_LANGUAGE = "eng";
+    private static final String DEFAULT_LANGUAGE = "por";
     private static final String EXPECTED_FILE = TESSBASE_PATH + "tessdata/" + DEFAULT_LANGUAGE
             + ".traineddata";
 
