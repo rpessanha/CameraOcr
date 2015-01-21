@@ -10,6 +10,7 @@ import android.hardware.Camera;
 import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -128,12 +129,14 @@ public class MainActivity extends Activity {
                     return;
 
                 }
-                String file2save = (String.format(pictureFileDir+"%d.jpg", System.currentTimeMillis()));
+                String file2save = (String.format(pictureFileDir+"/%d.jpg", System.currentTimeMillis()));
                 outStream = new FileOutputStream(file2save);
                 outStream.write(data);
+                outStream.flush();
                 outStream.close();
+                //MediaStore.Images.Media.insertImage(getContentResolver(),pictureFileDir,file.getName(),file.getName());
                 Toast.makeText(context, "File saved at : "+String.format(
-                                pictureFileDir+"%d.jpg", System.currentTimeMillis()),
+                                pictureFileDir+"/%d.jpg", System.currentTimeMillis()),
                         Toast.LENGTH_LONG).show();
                 ocr(file2save,"/sdcard/","eng");
             } catch (FileNotFoundException e) {
@@ -223,11 +226,11 @@ public class MainActivity extends Activity {
             // Vai buscar as tags (parametros) da foto
             ExifInterface exif = new ExifInterface(IMAGE_PATH);
             int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
+            //ImageHelper
             Log.v("OCR", "Orient: " + exifOrientation);
 
             int rotate = 0;
-            switch (exifOrientation) {
+           switch (exifOrientation) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
                     rotate = 90;
                     break;
@@ -316,7 +319,7 @@ public class Preview  extends SurfaceView implements SurfaceHolder.Callback {
             camera.setPreviewCallback(new Camera.PreviewCallback() {
 
                 public void onPreviewFrame(byte[] data, Camera arg1) {
-//
+// refresh the view
                     Preview.this.invalidate();
                 }
             });
