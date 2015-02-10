@@ -29,4 +29,5 @@ dependencies {
     //  compile 'com.android.support:appcompat-v7:17.0.0'
     compile project(':libraries:tess-two')
     compile 'com.android.support:support-v4:21.0.3'
+    compile files('libs/ksoap2-android-assembly-2.4-jar-with-dependencies.jar')
 }

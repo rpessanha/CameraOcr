@@ -24,6 +24,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -64,6 +65,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         // Remove title from windows
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // Set the content the activity_main.xml
         setContentView(R.layout.activity_main);
         // Define the screen orientation, prevents rotating

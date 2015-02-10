@@ -1,6 +1,6 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@drawable/Euromilhoes_2_720_1280"
+    android:layout_height="match_parent" android:background="@drawable/euromilhoes__720_1280"
     tools:context="pessanha.com.myfirstapp.Start"
     style="@style/FullscreenTheme">
 
@@ -16,8 +16,11 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginTop="300dp"
-        android:padding="30dp">
+        android:padding="30dp"
+        android:baselineAligned="false"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="false"
+        android:gravity="bottom">
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -25,7 +28,8 @@
             android:id="@+id/imageButton"
             android:maxWidth="90px"
             android:layout_gravity="center_horizontal|bottom"
-            android:background="@drawable/btn_1_small" />
+            android:background="@drawable/btn_1_small_v2"
+            android:clickable="true" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -33,7 +37,7 @@
             android:id="@+id/imageButton2"
             android:maxWidth="90px"
             android:layout_gravity="center_horizontal|bottom"
-            android:background="@drawable/btn_2_small" />
+            android:background="@drawable/btn_2_small_v2" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -43,7 +47,7 @@
             android:scaleType="centerInside"
             android:adjustViewBounds="true"
             android:layout_gravity="center_horizontal|bottom"
-            android:background="@drawable/btn_3_small" />
+            android:background="@drawable/btn_3_small_v2" />
 
         </LinearLayout>
-</FrameLayout>
+</RelativeLayout>
