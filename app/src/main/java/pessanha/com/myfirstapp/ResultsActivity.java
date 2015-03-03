@@ -2,17 +2,23 @@ package pessanha.com.myfirstapp;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -23,12 +29,18 @@ import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import pessanha.com.myfirstapp.utils.MobileInternetConnectionDetector;
 import pessanha.com.myfirstapp.utils.WIFIInternetConnectionDetector;
+import pessanha.com.myfirstapp.utils.WsResults;
 
 
 public class ResultsActivity extends Activity {
@@ -41,28 +53,36 @@ public class ResultsActivity extends Activity {
     private static String xmlRequest;
     private static String drawtype;
     private static String drawType="EuroMillions";
-    private static String lastNumberOfDraws="2";
-    private static SoapObject listaResultados;
+    private static String lastNumberOfDraws="5";
+
     ListView listview;
+    private WsResults wsResults;
+    private ArrayList<EuroResult>  listaEuroResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_results);
+        // Referencia a istview
         listview = (ListView) findViewById(R.id.listView);
-        MobileInternetConnectionDetector mobileInternet = new MobileInternetConnectionDetector(getApplicationContext());
-        WIFIInternetConnectionDetector wifiInternet= new WIFIInternetConnectionDetector(getApplicationContext());
-        if(mobileInternet.checkMobileInternetConn() || wifiInternet.checkMobileInternetConn()){
-            // Internet Connection exists
-            showAlertDialog(ResultsActivity.this, "Internet Connection",
-                    "Your device has mobile internet", true);
-        } else {
-            // Internet connection doesn't exist
-            showAlertDialog(ResultsActivity.this, "No Internet Connection",
-                    "Your device doesn't have mobile internet", false);
-        }
+        // Carrega arraylist com Euroresults objects
+        listaEuroResults = new ArrayList<EuroResult>();
+        // Classe carrega resultado WebService
+        wsResults=new WsResults(drawType,lastNumberOfDraws);
+        //AsyncCall para carregar resultados
+
+        AsyncCallWS task = new AsyncCallWS();
+        task.execute();
+
+
+
     }
     public void showAlertDialog(Context context, String title, String message, Boolean status) {
+       /* final TextView myView = new TextView(getApplicationContext());
+        myView.setText(message);
+        myView.setTextSize(18);*/
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 
         // Setting Dialog Title
@@ -70,20 +90,21 @@ public class ResultsActivity extends Activity {
 
         // Setting Dialog Message
         alertDialog.setMessage(message);
-
+        //alertDialog.setView(myView);
         // Setting alert dialog icon
-        alertDialog.setIcon((status) ? R.drawable.success : R.drawable.fail);
+        alertDialog.setIcon(R.drawable.starshapeflaticon);
 
         // Setting OK Button
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+               // finish();
             }
         });
 
         // Showing Alert Message
         alertDialog.show();
-        AsyncCallWS task = new AsyncCallWS();
-        task.execute();
+        TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
+        textView.setTextSize(22);
     }
 
     @Override
@@ -107,124 +128,103 @@ public class ResultsActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
-    public void getResults(String drawType,String lastNumberOfDraws) {
-        //Create request
-        SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
-        //Property which holds input parameters
-        PropertyInfo drawTypePI = new PropertyInfo();
-        PropertyInfo lastNumberOfDrawsPI = new PropertyInfo();
-        //Set Name
-        drawTypePI.setName("drawType");
-        //Set Value
-        drawTypePI.setValue(drawType);
-        //Set dataType
-        drawTypePI.setType(String.class);
-        request.addProperty(drawTypePI);
-        //Set Name
-        lastNumberOfDrawsPI.setName("lastNumberOfDraws");
-        //Set Value
-        lastNumberOfDrawsPI.setValue(lastNumberOfDraws);
-        //Set dataType
-        lastNumberOfDrawsPI.setType(String.class);
+    public void listResults(){
+        listview.setAdapter(addItemToAdapter(wsResults.getList()));
+       /* final StableArrayAdapter adapter = new StableArrayAdapter(this,
+                android.R.layout.simple_list_item_1, wsResults.getList());
+        listview.setAdapter(adapter);*/
 
-        request.addProperty(lastNumberOfDrawsPI);
-
-        //Add the property to request object
-       // request.addProperty("drawType",drawType);
-        //request.addProperty("lastNumberOfDraws",lastNumberOfDraws);
-
-        //Create envelope
-        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
-                SoapEnvelope.VER11);
-        envelope.implicitTypes = false;
-        envelope.dotNet = true;
-       // envelope.encodingStyle = SoapSerializationEnvelope.XSD;
-        envelope.setOutputSoapObject(request);
-        //Create HTTP call object
-        HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
-        androidHttpTransport.debug=true;
-        try {
-            //Invole web service
-            //androidHttpTransport.setXmlVersionTag("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            androidHttpTransport.call(SOAP_ACTION, envelope);
-            //Get the response
-            //soap = GetSoapObject(method_name);
-           final SoapObject response = (SoapObject) envelope.getResponse();
-
-            //Assign it to fahren static variable
-            //drawtype =(String)listaResultados.getProperty(0).toString();
-           // xmlResponse=androidHttpTransport.responseDump;
-          //  xmlRequest=androidHttpTransport.requestDump;
-         //   xmlResponse = response.toString();
-            this.runOnUiThread(new Runnable() {
-                public void run() {
-                    // Toast.makeText(ResultsActivity.this,xmlResponse.toString(), Toast.LENGTH_SHORT).show();
-                    loadList(response);
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public void loadList(SoapObject listaResultados_)
+            }
+    private SimpleAdapter addItemToAdapter(ArrayList<EuroResult> list)
     {
+        // Each row in the list stores country name, currency and flag
+        List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
 
-        final ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < listaResultados_.getPropertyCount(); ++i) {
-            listaResultados = (SoapObject) listaResultados_.getProperty(i);
-            list.add(listaResultados.getProperty(1).toString());
+        for(int i=0;i<list.size();i++){
+            HashMap<String, String> hm = new HashMap<String,String>();
+            hm.put("txt","Sorteio de "+((EuroResult)list.get(i)).getDateOnly());
+            hm.put("cur",((EuroResult)list.get(i)).getEuroKey());
+            hm.put("flag", Integer.toString(R.drawable.starshapeflaticon) );
+            //hm.put("flag", Integer.toString(flags[i]) );
+            aList.add(hm);
         }
-        final StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, list);
-        listview.setAdapter(adapter);
 
+        // Keys used in Hashmap
+        String[] from = {"flag","txt","cur" };
+
+        // Ids of views in listview_layout
+        int[] to = {R.id.flag, R.id.txt,R.id.cur};
+
+        // Instantiating an adapter to store each items
+        // R.layout.listview_layout defines the layout of each item
+        SimpleAdapter adapter = new SimpleAdapter(getBaseContext(), aList, R.layout.listview_layout, from, to);
+        return adapter;
+        // Getting a reference to listview of main.xml layout file
+        //ListView listView = ( ListView ) findViewById(R.id.listview);
+
+        // Setting the adapter to the listView
+        //listView.setAdapter(adapter);
+    }
+  /* private class StableArrayAdapter extends ArrayAdapter<String> {
+
+       HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+
+       public StableArrayAdapter(Context context, int textViewResourceId,
+                                 List<String> objects) {
+           super(context, textViewResourceId, objects);
+           for (int i = 0; i < objects.size(); ++i) {
+               mIdMap.put(objects.get(i), i);
+           }
+       }
+
+       @Override
+       public long getItemId(int position) {
+           String item = getItem(position);
+           return mIdMap.get(item);
+       }
+
+       @Override
+       public boolean hasStableIds() {
+           return true;
+       }
+
+   }*/
+    private void handleClickListview(){
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
-                final String item = (String) parent.getItemAtPosition(position);
+                HashMap<String,String> map=(HashMap<String, String>) parent.getItemAtPosition(position);
 
 
-                               // list.remove(item);
-                               // adapter.notifyDataSetChanged();
-                                //view.setAlpha(1);
+                //mTimeText.setText("Time: " + dateFormat.format(date));
+                showAlertDialog(ResultsActivity.this, "Sorteio do dia "+listaEuroResults.get(position).getDateOnly(),
+                        listaEuroResults.get(position).getFirstNumber()+" - "+
+                                listaEuroResults.get(position).getSecondNumber()+" - "+
+                                listaEuroResults.get(position).getThirdNumber()+" - "+
+                                listaEuroResults.get(position).getFourthNumber()+" - "+
+                                listaEuroResults.get(position).getFifthNumber()+"   ("+
+                                listaEuroResults.get(position).getFirstLuckyNumber()+" - "+
+                                listaEuroResults.get(position).getSecondLuckyNumber()+")", true);
+                // list.remove(item);
+                // adapter.notifyDataSetChanged();
+                //view.setAlpha(1);
 
 
             }
 
         });
-    }
-    private class StableArrayAdapter extends ArrayAdapter<String> {
-
-        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-        public StableArrayAdapter(Context context, int textViewResourceId,
-                                  List<String> objects) {
-            super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
-        }
-
-        @Override
-        public long getItemId(int position) {
-            String item = getItem(position);
-            return mIdMap.get(item);
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
 
     }
     private class AsyncCallWS extends AsyncTask<String, Void, Void> {
+        private ProgressDialog pdia;
         @Override
         protected Void doInBackground(String... params) {
             Log.i(TAG, "doInBackground");
-            getResults(drawType, lastNumberOfDraws);
+           // getResults(drawType, lastNumberOfDraws);
+            wsResults.getResults();
+
             return null;
         }
 
@@ -232,11 +232,22 @@ public class ResultsActivity extends Activity {
         protected void onPostExecute(Void result) {
             Log.i(TAG, "onPostExecute");
             //tv.setText(fahren + "° F");
+            listaEuroResults = wsResults.getEuroResultsList();
+            listResults();
+            handleClickListview();
+            pdia.dismiss();
+
         }
 
         @Override
         protected void onPreExecute() {
             Log.i(TAG, "onPreExecute");
+            pdia = new ProgressDialog(ResultsActivity.this);
+            pdia.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pdia.setMessage("A carregar...");
+            pdia.setIndeterminate(true);
+            pdia.setCanceledOnTouchOutside(false);
+            pdia.show();
             //tv.setText("Calculating...");
         }
 

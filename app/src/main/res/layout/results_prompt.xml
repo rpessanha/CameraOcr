@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="250dp"
+    >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="250dp"
+    android:gravity="top">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal|bottom"
+        android:baselineAligned="false"
+        android:gravity="top"
+        android:padding="30dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/txt1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number"
+                android:numeric="integer"
+                android:imeOptions="actionNext"
+                android:textColor="@color/White"
+                android:textSize="22dp"
+                android:nextFocusForward="@+id/txt2"
+
+
+
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/txt2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number"
+                android:numeric="integer"
+                android:imeOptions="actionNext"
+                android:textColor="@color/White"
+                android:textIsSelectable="false"
+                android:textSize="22dp"
+                android:nextFocusForward="@+id/txt3"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/txt3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number"
+                android:numeric="integer"
+                android:imeOptions="actionNext"
+                android:textColor="@color/White"
+                android:textSize="22dp"
+                android:nextFocusForward="@+id/txt4"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/txt4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number"
+                android:numeric="integer"
+                android:textColor="@color/White"
+                android:imeOptions="actionNext"
+                android:textSize="22dp"
+                android:nextFocusForward="@+id/txt5"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/txt5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="number"
+                android:numeric="integer"
+                android:textColor="@color/White"
+                android:imeOptions="actionNext"
+                android:textSize="22dp"
+                android:nextFocusForward="@+id/txt6"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+        <LinearLayout
+
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="false"
+            android:layout_gravity="center_horizontal|bottom"
+            android:baselineAligned="false"
+            android:padding="30dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="bottom">
+
+                <EditText
+                    android:id="@+id/txt6"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:numeric="integer"
+                    android:textColor="@color/White"
+                    android:imeOptions="actionNext"
+                    android:textSize="46dp"
+                    android:nextFocusForward="@+id/txt7"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="bottom">
+
+                <EditText
+                    android:id="@+id/txt7"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:numeric="integer"
+                    android:textColor="@color/White"
+                    android:textSize="46dp"
+                    android:imeOptions="actionDone"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+</RelativeLayout>
+</LinearLayout>
