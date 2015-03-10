@@ -6,6 +6,7 @@ package pessanha.com.myfirstapp;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -14,18 +15,26 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
+import pessanha.com.myfirstapp.utils.DrawingView;
+
 public class Preview  extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "Preview";
-
+    private boolean listenerSet = false;
+    public Paint paint;
+    private DrawingView drawingView;
+    private boolean drawingViewSet = false;
     SurfaceHolder mHolder;
     public Camera camera;
 
@@ -39,11 +48,13 @@ public class Preview  extends SurfaceView implements SurfaceHolder.Callback {
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
+
+
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, acquire the camera and tell it where
         // to draw.
         camera = Camera.open();
-        //setCameraDisplayOrientation(MainActivity,0,camera);
+        //setCameraDisplayOrientation(OcrActivity,0,camera);
         try {
             camera.setPreviewDisplay(holder);
 
@@ -94,7 +105,9 @@ public class Preview  extends SurfaceView implements SurfaceHolder.Callback {
         camera.release();
         camera = null;
     }
-
+    public void setFocus(int num){
+        //this.camera.
+    }
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         // Now that the size is known, set up the camera parameters and begin
         // the preview.
@@ -108,8 +121,8 @@ public class Preview  extends SurfaceView implements SurfaceHolder.Callback {
         Camera.Size cs = sizes.get(0);
         parameters.setPreviewSize(cs.width, cs.height);
         parameters.setPictureSize(cs.width, cs.height);
-        //parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-        parameters.setFocusMode("auto");
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+        //parameters.setFocusMode("auto");
         camera.setParameters(parameters);
         camera.startPreview();
     }

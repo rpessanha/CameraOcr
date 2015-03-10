@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,12 +29,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import pessanha.com.myfirstapp.utils.CheckEuroResults;
 import pessanha.com.myfirstapp.utils.WsResults;
 
 
 public class CheckResultsActivity extends Activity {
     final Context context = CheckResultsActivity.this;
-    private ImageButton btnresults, btnverify;
+    private ImageButton btnresults, btnverify, btnocr;
     private ArrayList<EuroResult> listaResultsToCheck;
     private EditText txt1, txt2, txt3, txt4, txt5, txt6, txt7;
     private ListView lista;
@@ -44,15 +46,18 @@ public class CheckResultsActivity extends Activity {
     private ArrayList<EuroResult>  listaEuroResults;
     private EuroResult euroresult;
     AlertDialog.Builder alertDialogBuilder;
+    private CheckEuroResults checkEuroResults;
+    private boolean resultsChecked = false;
     //private View otherview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.check_results_activity);
+        setContentView(R.layout.activity_checkresults);
         btnresults = (ImageButton) findViewById(R.id.btnPrompt);
         btnverify = (ImageButton) findViewById(R.id.imageButton4);
+        btnocr = (ImageButton) findViewById(R.id.imageButton5);
         //otherview = ((LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.results_prompt, null, false);
         listaResultsToCheck = new ArrayList<EuroResult>();
         lista=(ListView)findViewById(R.id.listView2);
@@ -62,6 +67,7 @@ public class CheckResultsActivity extends Activity {
 
             @Override
             public void onClick(View arg0) {
+                resultsChecked = false;
                 LayoutInflater li = LayoutInflater.from(context);
                 View promptsView = li.inflate(R.layout.results_prompt, null);
                 promptsView.setLayoutParams(new WindowManager.LayoutParams(500, 300));
@@ -110,6 +116,7 @@ public class CheckResultsActivity extends Activity {
                                                 android.R.layout.simple_list_item_1, list);
                                         lista.setAdapter(adapter);*/
                                         lista.setAdapter(addItemToAdapter(listaResultsToCheck));
+
                                     }
                                 })
                         .setNegativeButton("Cancel",
@@ -129,6 +136,7 @@ public class CheckResultsActivity extends Activity {
         btnverify.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0) {
+                resultsChecked = false;
                 wsResults = new WsResults(drawType, lastNumberOfDraws);
                 //AsyncCall para carregar resultados
 
@@ -136,6 +144,20 @@ public class CheckResultsActivity extends Activity {
                 task.execute();
             }
         });
+        btnocr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                  //  v.startAnimation(buttonClick);
+
+                    Intent intent = new Intent
+                            (CheckResultsActivity.this, TouchActivity.class);
+                    CheckResultsActivity.this.startActivity(intent);
+                  /*  startActivityForResult(
+                            Intent.createChooser(intent, "Select Picture"),
+                            1
+                    );*/
+                }
+            });
     /*    lista.setLongClickable(true);
         lista.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
@@ -147,6 +169,22 @@ public class CheckResultsActivity extends Activity {
                 return true;
             }
         });*/
+    }
+    @Override
+    protected void onActivityResult(
+            int aRequestCode, int aResultCode, Intent aData
+    ) {
+        switch (aRequestCode) {
+            case 1:
+                //handleUserPickedImage(aData);
+                if(aData!=null) {
+                    String message = aData.getStringExtra("MESSAGE");
+                    Toast.makeText(CheckResultsActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+        }
+        super.onActivityResult(aRequestCode, aResultCode, aData);
     }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo) {
@@ -273,8 +311,10 @@ public class CheckResultsActivity extends Activity {
 
         for(int i=0;i<list.size();i++){
             HashMap<String, String> hm = new HashMap<String,String>();
-            hm.put("txt","Sorteio de "+((EuroResult)list.get(i)).getDateOnly());
-            hm.put("cur",((EuroResult)list.get(i)).getEuroKey());
+           // hm.put("txt","Sorteio de "+((EuroResult)list.get(i)).getDateOnly());
+            hm.put("txt",((EuroResult)list.get(i)).getEuroKey());
+if(resultsChecked)
+            hm.put("cur","Números: "+Integer.toString(((EuroResult)list.get(i)).getStars()) + "   Estrelas: "+Integer.toString(((EuroResult)list.get(i)).getNumbers()));
             hm.put("flag", Integer.toString(R.drawable.starshapeflaticon) );
             //hm.put("flag", Integer.toString(flags[i]) );
             aList.add(hm);
@@ -289,6 +329,8 @@ public class CheckResultsActivity extends Activity {
         // Instantiating an adapter to store each items
         // R.layout.listview_layout defines the layout of each item
         SimpleAdapter adapter = new SimpleAdapter(getBaseContext(), aList, R.layout.listview_layout, from, to);
+       // TextView tv = (TextView)findViewById(R.id.txt);
+        //tv.setTextSize(18);
         return adapter;
         // Getting a reference to listview of main.xml layout file
         //ListView listView = ( ListView ) findViewById(R.id.listview);
@@ -343,6 +385,7 @@ public class CheckResultsActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
     public void listResults(){
+        resultsChecked = true;
         LayoutInflater li = LayoutInflater.from(context);
         View promptsView = li.inflate(R.layout.list_layout, null);
         promptsView.setLayoutParams(new WindowManager.LayoutParams(500, 300));
@@ -376,6 +419,8 @@ public class CheckResultsActivity extends Activity {
                         listaEuroResults.get(position).getSecondLuckyNumber()
                 );
                 dlg.cancel();
+                checkEuroResults = new CheckEuroResults(listaResultsToCheck,euroresult);
+                lista.setAdapter(addItemToAdapter(checkEuroResults.CheckNumbers()));
                 //mTimeText.setText("Time: " + dateFormat.format(date));
                /* showAlertDialog(ResultsActivity.this, "Sorteio do dia "+listaEuroResults.get(position).getDateOnly(),
                         listaEuroResults.get(position).getFirstNumber()+" - "+

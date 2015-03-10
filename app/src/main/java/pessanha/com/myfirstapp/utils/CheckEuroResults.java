@@ -18,7 +18,7 @@ public class CheckEuroResults {
 
 
     }
-    public void CheckNumbers()
+    public ArrayList<EuroResult> CheckNumbers()
     {
         int stars=0;
         int numbers=0;
@@ -27,7 +27,7 @@ public class CheckEuroResults {
             // Para cada numero do euroresult jogado
             for(int j=0;j<5;j++){
                 for (int k=0;k<5;k++){
-                    if(listaResultsToCheck.get(i).getArrayNumbers()[i] == resultToCheck.getArrayNumbers()[k])
+                    if(listaResultsToCheck.get(i).getArrayNumbers()[j] == resultToCheck.getArrayNumbers()[k])
                     {
                         numbers++;
                     }
@@ -36,7 +36,7 @@ public class CheckEuroResults {
             }
             for(int j=4;j<listaResultsToCheck.get(i).getArrayNumbers().length;j++){
                 for (int k=4;k<resultToCheck.getArrayNumbers().length;k++){
-                    if(listaResultsToCheck.get(i).getArrayNumbers()[i] == resultToCheck.getArrayNumbers()[k])
+                    if(listaResultsToCheck.get(i).getArrayNumbers()[j] == resultToCheck.getArrayNumbers()[k])
                     {
                         stars++;
                     }
@@ -46,5 +46,6 @@ public class CheckEuroResults {
             listaResultsToCheck.get(i).setStars(stars);
             listaResultsToCheck.get(i).setNumbers(stars);
         }
+        return listaResultsToCheck;
     }
 }

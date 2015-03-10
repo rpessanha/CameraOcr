@@ -2,22 +2,17 @@ package pessanha.com.myfirstapp;
 
 
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import pessanha.com.myfirstapp.utils.MobileInternetConnectionDetector;
 import pessanha.com.myfirstapp.utils.WIFIInternetConnectionDetector;
@@ -29,7 +24,7 @@ import pessanha.com.myfirstapp.utils.WIFIInternetConnectionDetector;
  *
 
  */
-public class Start extends Activity {
+public class StartActivity extends Activity {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -69,33 +64,33 @@ public class Start extends Activity {
                     v.startAnimation(buttonClick);
 
                     Intent intent = new Intent
-                            (Start.this, MainActivity.class);
-                    Start.this.startActivity(intent);
+                            (StartActivity.this, OcrActivity.class);
+                    StartActivity.this.startActivity(intent);
                 }
             });*/
             btnResults.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   /* Toast.makeText(Start.this,
+                   /* Toast.makeText(StartActivity.this,
                             "Click!", Toast.LENGTH_SHORT).show();*/
                     Intent intent = new Intent
-                            (Start.this, ResultsActivity.class);
-                    Start.this.startActivity(intent);
+                            (StartActivity.this, ResultsActivity.class);
+                    StartActivity.this.startActivity(intent);
                 }
             });
             btnCheckResults.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    /*Toast.makeText(Start.this,
+                    /*Toast.makeText(StartActivity.this,
                             "Click!", Toast.LENGTH_SHORT).show();*/
                     Intent intent = new Intent
-                            (Start.this, CheckResultsActivity.class);
-                    Start.this.startActivity(intent);
+                            (StartActivity.this, CheckResultsActivity.class);
+                    StartActivity.this.startActivity(intent);
                 }
             });
         }
         else{
-            showAlertDialog(Start.this, "No Internet Connection",
+            showAlertDialog(StartActivity.this, "No Internet Connection",
                     "Your device doesn't have mobile internet", false);
         }
 

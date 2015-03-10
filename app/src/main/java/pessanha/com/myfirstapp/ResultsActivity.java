@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,56 +14,33 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.serialization.PropertyInfo;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapPrimitive;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import pessanha.com.myfirstapp.utils.MobileInternetConnectionDetector;
-import pessanha.com.myfirstapp.utils.WIFIInternetConnectionDetector;
 import pessanha.com.myfirstapp.utils.WsResults;
 
 
 public class ResultsActivity extends Activity {
-    private final String NAMESPACE = "http://www.lottery.ie/resultsservice";
-    private final String URL = "http://resultsservice.lottery.ie/ResultsService.asmx";
-    private final String SOAP_ACTION = "http://www.lottery.ie/resultsservice/GetResults";
-    private final String METHOD_NAME = "GetResults";
-    private String TAG = "PGGURU";
-    private static String xmlResponse;
-    private static String xmlRequest;
-    private static String drawtype;
+    private String TAG = "Euromilhoes";
     private static String drawType="EuroMillions";
     private static String lastNumberOfDraws="5";
-
-    ListView listview;
+    private ListView listview;
     private WsResults wsResults;
     private ArrayList<EuroResult>  listaEuroResults;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_results);
+        setContentView(R.layout.activity_lastresults);
         // Referencia a istview
         listview = (ListView) findViewById(R.id.listView);
         // Carrega arraylist com Euroresults objects
@@ -72,78 +48,33 @@ public class ResultsActivity extends Activity {
         // Classe carrega resultado WebService
         wsResults=new WsResults(drawType,lastNumberOfDraws);
         //AsyncCall para carregar resultados
-
         AsyncCallWS task = new AsyncCallWS();
         task.execute();
-
-
-
-    }
-    public void showAlertDialog(Context context, String title, String message, Boolean status) {
-       /* final TextView myView = new TextView(getApplicationContext());
-        myView.setText(message);
-        myView.setTextSize(18);*/
-        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-
-        // Setting Dialog Title
-        alertDialog.setTitle(title);
-
-        // Setting Dialog Message
-        alertDialog.setMessage(message);
-        //alertDialog.setView(myView);
-        // Setting alert dialog icon
-        alertDialog.setIcon(R.drawable.starshapeflaticon);
-
-        // Setting OK Button
-        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-               // finish();
-            }
-        });
-
-        // Showing Alert Message
-        alertDialog.show();
-        TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
-        textView.setTextSize(22);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_results, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+    /**
+     *  Lists results by adding them to the adapter to fill the listvew
+     *  The adapter is filled by the values returned from the weResults method getList of type ArrayList<EuroResult>
+     */
     public void listResults(){
         listview.setAdapter(addItemToAdapter(wsResults.getList()));
-       /* final StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, wsResults.getList());
-        listview.setAdapter(adapter);*/
+    }
 
-            }
-    private SimpleAdapter addItemToAdapter(ArrayList<EuroResult> list)
+    /**
+     *
+     * @param euroResults Arraylist of euroresult
+     * @return adapter
+     */
+    private SimpleAdapter addItemToAdapter(ArrayList<EuroResult> euroResults)
     {
-        // Each row in the list stores country name, currency and flag
+        // Each row in the list stores Sorteio, key and icon
         List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
 
-        for(int i=0;i<list.size();i++){
+        for(int i=0;i<euroResults.size();i++){
             HashMap<String, String> hm = new HashMap<String,String>();
-            hm.put("txt","Sorteio de "+((EuroResult)list.get(i)).getDateOnly());
-            hm.put("cur",((EuroResult)list.get(i)).getEuroKey());
+            hm.put("txt","Sorteio de "+((EuroResult)euroResults.get(i)).getDateOnly());
+            hm.put("cur",((EuroResult)euroResults.get(i)).getEuroKey());
             hm.put("flag", Integer.toString(R.drawable.starshapeflaticon) );
             //hm.put("flag", Integer.toString(flags[i]) );
             aList.add(hm);
@@ -159,43 +90,18 @@ public class ResultsActivity extends Activity {
         // R.layout.listview_layout defines the layout of each item
         SimpleAdapter adapter = new SimpleAdapter(getBaseContext(), aList, R.layout.listview_layout, from, to);
         return adapter;
-        // Getting a reference to listview of main.xml layout file
-        //ListView listView = ( ListView ) findViewById(R.id.listview);
-
-        // Setting the adapter to the listView
-        //listView.setAdapter(adapter);
     }
-  /* private class StableArrayAdapter extends ArrayAdapter<String> {
 
-       HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-       public StableArrayAdapter(Context context, int textViewResourceId,
-                                 List<String> objects) {
-           super(context, textViewResourceId, objects);
-           for (int i = 0; i < objects.size(); ++i) {
-               mIdMap.put(objects.get(i), i);
-           }
-       }
-
-       @Override
-       public long getItemId(int position) {
-           String item = getItem(position);
-           return mIdMap.get(item);
-       }
-
-       @Override
-       public boolean hasStableIds() {
-           return true;
-       }
-
-   }*/
+    /**
+     *  Called by the AsyncCallws to show the numbers in AlertDialog
+     */
     private void handleClickListview(){
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
-                HashMap<String,String> map=(HashMap<String, String>) parent.getItemAtPosition(position);
+
 
 
                 //mTimeText.setText("Time: " + dateFormat.format(date));
@@ -217,6 +123,43 @@ public class ResultsActivity extends Activity {
         });
 
     }
+    /**
+     *
+     * @param context   The base class
+     * @param title Title box in alert dialog
+     * @param message
+     * @param status
+     */
+    public void showAlertDialog(Context context, String title, String message, Boolean status) {
+        // AlertDialog Builder
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+
+        // Setting Dialog Title
+        alertDialog.setTitle(title);
+
+        // Setting Dialog Message
+        alertDialog.setMessage(message);
+
+        // Setting alert dialog icon
+        alertDialog.setIcon(R.drawable.starshapeflaticon);
+
+        // Setting OK Button and clickListener
+        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // Let it empty. Just to close this one
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+
+        // Get message box from alertdialog
+        TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
+
+        // Change font
+        textView.setTextSize(22);
+    }
+
     private class AsyncCallWS extends AsyncTask<String, Void, Void> {
         private ProgressDialog pdia;
         @Override

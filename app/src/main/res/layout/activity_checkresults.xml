@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/listView2"
-            android:layout_margin="20dp" />
+            android:layout_margin="15dp" />
     </LinearLayout>
     <LinearLayout
 
@@ -73,17 +73,7 @@
             android:layout_margin="5dp"
             android:scaleType="fitCenter" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:id="@+id/imageButton4"
-            android:layout_gravity="center_horizontal|bottom"
-            android:adjustViewBounds="false"
-            android:background="@drawable/btn_small_v3_verify"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:layout_margin="5dp"
-            android:scaleType="fitCenter" />
+
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="50dp"
@@ -92,6 +82,17 @@
 
             android:cropToPadding="false"
             android:background="@drawable/btn_small_v3_ocr"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:scaleType="fitCenter" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:id="@+id/imageButton4"
+            android:layout_gravity="center_horizontal|bottom"
+            android:adjustViewBounds="false"
+            android:background="@drawable/btn_small_v3_verify"
             android:layout_weight="1"
             android:padding="10dp"
             android:layout_margin="5dp"

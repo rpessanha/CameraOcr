@@ -14,12 +14,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/starshapeflaticon"
         android:label="@string/app_name" >
 
         <!--
             <activity
-            android:name=".Start"
+            android:name=".StartActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,14 +29,14 @@
         </activity>
         -->
         <activity
-            android:name=".MainActivity"
+            android:name=".OcrActivity"
             android:label="@string/title_activity_display_message" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pessanha.com.myfirstapp.MainActivity" />
+                android:value=".OcrActivity" />
         </activity>
         <activity
-            android:name=".Start"
+            android:name=".StartActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_start"
             android:theme="@style/FullscreenTheme" >
@@ -50,10 +50,15 @@
             android:name=".ResultsActivity"
             android:label="@string/title_activity_results" >
         </activity>
-        <activity
+       <activity
             android:name=".CheckResultsActivity"
             android:label="@string/title_activity_check_results" >
         </activity>
+        <activity
+            android:name=".TouchActivity"
+            android:label="@string/title_activity_check_results" >
+        </activity>
+
     </application>
 
 </manifest>

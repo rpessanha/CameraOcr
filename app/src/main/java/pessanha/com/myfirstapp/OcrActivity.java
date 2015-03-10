@@ -17,8 +17,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -44,7 +42,7 @@ import java.util.Locale;
 //import android.support.v7.app.ActionBarActivity;
 
 
-public class MainActivity extends Activity {
+public class OcrActivity extends Activity {
     private final static String TAG = "OCR Camera";
     protected static final int MEDIA_TYPE_IMAGE = 0;
     private Camera camera;
@@ -66,8 +64,8 @@ public class MainActivity extends Activity {
         // Remove title from windows
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // Set the content the activity_main.xml
-        setContentView(R.layout.activity_main);
+        // Set the content the activity_ocr.xml
+        setContentView(R.layout.activity_ocr);
         // Define the screen orientation, prevents rotating
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // Save context with environment data from activity
@@ -79,7 +77,7 @@ public class MainActivity extends Activity {
         // Instance Button for camera click
         buttonClick = (ImageButton) findViewById(R.id.buttonClick);
         // Still have to find out what to do with this seekbar (maybe zoom or focus)
-        seekbar = (SeekBar) findViewById(R.id.seekBar);
+       /* seekbar = (SeekBar) findViewById(R.id.seekBar);
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -95,7 +93,7 @@ public class MainActivity extends Activity {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
-        });
+        });*/
         // Bring button to front
         buttonClick.bringToFront();
         // Clicking button then picture is taken
@@ -292,8 +290,11 @@ public class MainActivity extends Activity {
        /* if (recognizedText.length() != 0) {
             ((TextView) findViewById(R.id.field)).setText(recognizedText.trim());
         }*/
-        Toast.makeText(context,recognizedText.toString() , Toast.LENGTH_LONG).show();
-
+        //Toast.makeText(context,recognizedText.toString() , Toast.LENGTH_LONG).show();
+        Intent intent=new Intent();
+        intent.putExtra("MESSAGE",recognizedText.toString());
+        setResult(1,intent);
+        finish();//finishing activity
     }
 
     /**
@@ -321,7 +322,7 @@ public class MainActivity extends Activity {
             // The Surface has been created, acquire the camera and tell it where
             // to draw.
             camera = Camera.open();
-            setCameraDisplayOrientation(MainActivity.this,0,camera);
+            setCameraDisplayOrientation(OcrActivity.this,0,camera);
             try {
                 camera.setPreviewDisplay(holder);
                 camera.setPreviewCallback(new Camera.PreviewCallback() {
