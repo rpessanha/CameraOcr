@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
 
 import pessanha.com.myfirstapp.utils.DrawingView;
 
@@ -18,26 +21,30 @@ public class TouchActivity extends Activity {
     private PreviewSurfaceView camView;
     private CameraPreview cameraPreview;
     private DrawingView drawingView;
-
-    private int previewWidth = 1280;
-    private int previewHeight = 720;
-
+    private ImageButton buttonClick;
+    private int previewWidth = 720;
+    private int previewHeight = 1280;
+    private int rotation;
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ActionBar actionBar = getActionBar();
+        // Remove title from windows
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        /*ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayShowHomeEnabled(false);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        actionBar.setDisplayShowHomeEnabled(false);*/
+        // Define the screen orientation, prevents rotating
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         setContentView(R.layout.activity_touch);
-
+        buttonClick = (ImageButton) findViewById(R.id.buttonClick);
         camView = (PreviewSurfaceView) findViewById(R.id.preview_surface);
         SurfaceHolder camHolder = camView.getHolder();
-
-        cameraPreview = new CameraPreview(previewWidth, previewHeight);
+        rotation = this.getWindowManager().getDefaultDisplay()
+                .getRotation();
+        cameraPreview = new CameraPreview(previewWidth, previewHeight,rotation);
         camHolder.addCallback(cameraPreview);
         camHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 

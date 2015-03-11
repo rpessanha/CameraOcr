@@ -18,5 +18,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </pessanha.com.myfirstapp.utils.DrawingView>
-
+    <ImageButton
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:id="@+id/buttonClick"
+        android:layout_gravity="center_horizontal|bottom"
+        android:src="@drawable/photoclick"
+        android:onClick="onClick"
+        android:background="@null" />
 </FrameLayout>
