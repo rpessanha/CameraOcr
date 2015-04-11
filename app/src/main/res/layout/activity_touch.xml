@@ -5,12 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="pessanha.com.myfirstapp.TouchActivity"
-    tools:ignore="MergeRootFrame" >
+    tools:ignore="MergeRootFrame"
+    android:orientation="vertical"
+    >
 
     <pessanha.com.myfirstapp.PreviewSurfaceView
         android:id="@+id/preview_surface"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/euromilhoes_2_720_1280_hole">
     </pessanha.com.myfirstapp.PreviewSurfaceView>
 
     <pessanha.com.myfirstapp.utils.DrawingView

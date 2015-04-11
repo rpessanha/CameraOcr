@@ -3,6 +3,7 @@ package pessanha.com.myfirstapp;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,7 +12,7 @@ import java.util.Date;
 /**
  * Created by pessanha on 10/02/2015.
  */
-public class EuroResult {
+public class EuroResult implements Serializable {
     private String drawDate;
     private String drawNumber;
     private String message;
@@ -27,7 +28,7 @@ public class EuroResult {
     private int stars;
     private int numbers;
 
-    EuroResult(String drawDate_, String drawNumber_, String message_,
+    public EuroResult(String drawDate_, String drawNumber_, String message_,
                  String topPrize_, int firstNumber_, int secondNumber_, int thirdNumber_, int fourthNumber_, int fifthNumber_,
                  int firstLuckyNumber_, int secondLuckyNumber_){
         /*if (drawDate_ == null) {
@@ -152,13 +153,34 @@ public class EuroResult {
     public String getEuroKey()
     {
         String finalResult="";
-        finalResult = Integer.toString(firstNumber)+" - "+
-                Integer.toString(secondNumber)+" - "+
-                Integer.toString(thirdNumber)+" - "+
-                Integer.toString(fourthNumber)+" - "+
-                Integer.toString(fifthNumber)+" - ("+
-                Integer.toString(firstLuckyNumber)+" - "+
-                Integer.toString(secondLuckyNumber)+")";
+        String firstNumber_str=Integer.toString(firstNumber);
+        String secondNumber_str= Integer.toString(secondNumber);
+        String thirdNumber_str=Integer.toString(thirdNumber);
+        String fourthNumber_str=Integer.toString(fourthNumber);
+        String fifthNumber_str=Integer.toString(fifthNumber);
+        String firstLuckyNumber_str=Integer.toString(firstLuckyNumber);
+        String secondLuckyNumber_str=Integer.toString(secondLuckyNumber);
+        if(firstNumber_str.trim().equals("0") || firstNumber_str.length()>2 )
+            firstNumber_str="?";
+        if(secondNumber_str.trim().equals("0") || secondNumber_str.length()>2 )
+            secondNumber_str="?";
+        if(thirdNumber_str.trim().equals("0") || thirdNumber_str.length()>2 )
+            thirdNumber_str="?";
+        if(fourthNumber_str.trim().equals("0") || fourthNumber_str.length()>2 )
+            fourthNumber_str="?";
+        if(fifthNumber_str.trim().equals("0") || fifthNumber_str.length()>2 )
+            fifthNumber_str="?";
+        if(firstLuckyNumber_str.trim().equals("0") || firstLuckyNumber_str.length()>2 )
+            firstLuckyNumber_str="?";
+        if(secondLuckyNumber_str.trim().equals("0") || secondLuckyNumber_str.length() >2 )
+            secondLuckyNumber_str="?";
+        finalResult = firstNumber_str+" - "+
+                secondNumber_str+" - "+
+                thirdNumber_str+" - "+
+                fourthNumber_str+" - "+
+                fifthNumber_str+" - ("+
+                firstLuckyNumber_str+" - "+
+                secondLuckyNumber_str+")";
         return finalResult;
 
     }

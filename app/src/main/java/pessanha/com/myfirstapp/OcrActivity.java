@@ -76,24 +76,7 @@ public class OcrActivity extends Activity {
         ((FrameLayout) findViewById(R.id.preview)).addView(preview, 0);
         // Instance Button for camera click
         buttonClick = (ImageButton) findViewById(R.id.buttonClick);
-        // Still have to find out what to do with this seekbar (maybe zoom or focus)
-       /* seekbar = (SeekBar) findViewById(R.id.seekBar);
-        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-               /// camera.
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });*/
         // Bring button to front
         buttonClick.bringToFront();
         // Clicking button then picture is taken

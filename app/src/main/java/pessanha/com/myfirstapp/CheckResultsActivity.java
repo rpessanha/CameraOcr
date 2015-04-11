@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,6 +55,7 @@ public class CheckResultsActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_checkresults);
         btnresults = (ImageButton) findViewById(R.id.btnPrompt);
         btnverify = (ImageButton) findViewById(R.id.imageButton4);
@@ -115,7 +117,7 @@ public class CheckResultsActivity extends Activity {
                                        /* final StableArrayAdapter adapter = new StableArrayAdapter(CheckResultsActivity.this,
                                                 android.R.layout.simple_list_item_1, list);
                                         lista.setAdapter(adapter);*/
-                                        lista.setAdapter(addItemToAdapter(listaResultsToCheck));
+                                        lista.setAdapter(addItemToAdapter(listaResultsToCheck,0));
 
                                     }
                                 })
@@ -136,12 +138,27 @@ public class CheckResultsActivity extends Activity {
         btnverify.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View arg0) {
-                resultsChecked = false;
-                wsResults = new WsResults(drawType, lastNumberOfDraws);
-                //AsyncCall para carregar resultados
+                new AlertDialog.Builder(CheckResultsActivity.this)
+                        .setTitle("Verificar chaves")
+                        .setMessage("Tem a certeza que as chaves estão de acordo?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                resultsChecked = false;
+                                wsResults = new WsResults(drawType, lastNumberOfDraws);
+                                //AsyncCall para carregar resultados
 
-                AsyncCallWS task = new AsyncCallWS();
-                task.execute();
+                                AsyncCallWS task = new AsyncCallWS();
+                                task.execute();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
             }
         });
         btnocr.setOnClickListener(new View.OnClickListener() {
@@ -149,13 +166,14 @@ public class CheckResultsActivity extends Activity {
                 public void onClick(View v) {
                   //  v.startAnimation(buttonClick);
 
-                    Intent intent = new Intent
+                   /* Intent intent = new Intent
                             (CheckResultsActivity.this, TouchActivity.class);
-                    CheckResultsActivity.this.startActivity(intent);
-                  /*  startActivityForResult(
-                            Intent.createChooser(intent, "Select Picture"),
-                            1
-                    );*/
+                    CheckResultsActivity.this.startActivity(intent);*/
+                  Intent intent = new Intent
+                            (CheckResultsActivity.this, TouchActivity.class);
+                    /*CheckResultsActivity.this.startActivity(intent);*/
+                  startActivityForResult(intent,1);
+
                 }
             });
     /*    lista.setLongClickable(true);
@@ -178,8 +196,22 @@ public class CheckResultsActivity extends Activity {
             case 1:
                 //handleUserPickedImage(aData);
                 if(aData!=null) {
-                    String message = aData.getStringExtra("MESSAGE");
-                    Toast.makeText(CheckResultsActivity.this, message, Toast.LENGTH_SHORT).show();
+                   // String message = aData.getStringExtra("MESSAGE");
+                   // Toast.makeText(CheckResultsActivity.this, message, Toast.LENGTH_SHORT).show();
+                    listaResultsToCheck = (ArrayList<EuroResult>)aData.getSerializableExtra("result");
+                    //lista.setAdapter(addItemToAdapter());
+                    lista.setAdapter(addItemToAdapter(listaResultsToCheck,0));
+                    new AlertDialog.Builder(CheckResultsActivity.this)
+                            .setTitle("Verificar chaves")
+                            .setMessage("Verifique as chaves!")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                   // Toast.makeText(CheckResultsActivity.this, "Verifique os números. Pode editar os mesmos.", Toast.LENGTH_LONG).show();
                 }
                 break;
 
@@ -219,7 +251,7 @@ public class CheckResultsActivity extends Activity {
         for (int i = 0; i < listaResultsToCheck.size(); ++i) {
             list.add(listaResultsToCheck.get(i).getEuroKey());
         }
-        lista.setAdapter(addItemToAdapter(listaResultsToCheck));
+        lista.setAdapter(addItemToAdapter(listaResultsToCheck,0));
        /* final StableArrayAdapter adapter = new StableArrayAdapter(CheckResultsActivity.this,
                 android.R.layout.simple_list_item_1, list);*/
         //SimpleAdapter  adapter = new SimpleAdapter(getBaseContext(), aList, R.layout.listview_layout, from, to);
@@ -288,7 +320,7 @@ public class CheckResultsActivity extends Activity {
                                /* final StableArrayAdapter adapter = new StableArrayAdapter(CheckResultsActivity.this,
                                         android.R.layout.simple_list_item_1, list);
                                 lista.setAdapter(adapter);*/
-                                lista.setAdapter(addItemToAdapter(listaResultsToCheck));
+                                lista.setAdapter(addItemToAdapter(listaResultsToCheck,0));
                             }
                         })
                 .setNegativeButton("Cancel",
@@ -304,7 +336,7 @@ public class CheckResultsActivity extends Activity {
         // show it
         alertDialog.show();
     }
-    private SimpleAdapter addItemToAdapter(ArrayList<EuroResult> list)
+    private SimpleAdapter addItemToAdapter(ArrayList<EuroResult> list, int type)
     {
         // Each row in the list stores country name, currency and flag
         List<HashMap<String, String>> aList = new ArrayList<HashMap<String, String>>();
@@ -313,8 +345,12 @@ public class CheckResultsActivity extends Activity {
             HashMap<String, String> hm = new HashMap<String,String>();
            // hm.put("txt","Sorteio de "+((EuroResult)list.get(i)).getDateOnly());
             hm.put("txt",((EuroResult)list.get(i)).getEuroKey());
-if(resultsChecked)
-            hm.put("cur","Números: "+Integer.toString(((EuroResult)list.get(i)).getStars()) + "   Estrelas: "+Integer.toString(((EuroResult)list.get(i)).getNumbers()));
+            if(resultsChecked && type!=1)
+                hm.put("cur","Números: "+Integer.toString(((EuroResult) list.get(i)).getStars()) + "   Estrelas: "+Integer.toString(((EuroResult)list.get(i)).getNumbers()));
+            if(type==1)
+                hm.put("cur","Sorteio: "+((EuroResult)list.get(i)).getDateOnly());
+
+          //  if(type!=0)
             hm.put("flag", Integer.toString(R.drawable.starshapeflaticon) );
             //hm.put("flag", Integer.toString(flags[i]) );
             aList.add(hm);
@@ -393,10 +429,10 @@ if(resultsChecked)
                 context);
        // alertDialogBuilder.setView(promptsView);
         alertDialogBuilder.setView(promptsView);
-        alertDialogBuilder.setTitle("List");
+        alertDialogBuilder.setTitle("Ultimas 5 chaves");
         ListView lv = (ListView) promptsView.findViewById(R.id.lv);
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);
-        lv.setAdapter(addItemToAdapter(wsResults.getList()));
+        lv.setAdapter(addItemToAdapter(wsResults.getList(),1));
         //alertDialogBuilder.show();
         final AlertDialog dlg = alertDialogBuilder.create();
         dlg.show();
@@ -420,7 +456,7 @@ if(resultsChecked)
                 );
                 dlg.cancel();
                 checkEuroResults = new CheckEuroResults(listaResultsToCheck,euroresult);
-                lista.setAdapter(addItemToAdapter(checkEuroResults.CheckNumbers()));
+                lista.setAdapter(addItemToAdapter(checkEuroResults.CheckNumbers(),0));
                 //mTimeText.setText("Time: " + dateFormat.format(date));
                /* showAlertDialog(ResultsActivity.this, "Sorteio do dia "+listaEuroResults.get(position).getDateOnly(),
                         listaEuroResults.get(position).getFirstNumber()+" - "+

@@ -4,6 +4,7 @@ package pessanha.com.myfirstapp;
  * Created by pessanha on 10/03/2015.
  */
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -11,8 +12,11 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.ImageButton;
 
 import pessanha.com.myfirstapp.utils.DrawingView;
+
 
 /**
  * SurfaceView to show LenxCameraPreview2 feed
@@ -24,13 +28,23 @@ public class PreviewSurfaceView extends SurfaceView {
     public Paint paint;
     private DrawingView drawingView;
     private boolean drawingViewSet = false;
-
+    private TakePictureAndOcr takePictureAndOcr;
+    private int rotation;
+  //  private ImageButton takePicture;
     public PreviewSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         Paint paint = new Paint();
         paint.setColor(Color.GREEN);
         paint.setStrokeWidth(3);
         paint.setStyle(Paint.Style.STROKE);
+       /* takePicture = (ImageButton)findViewById(R.id.buttonClick);
+        takePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                takePictureAndOcr.onFocusClick(camPreview.getCamRotation());
+            }
+        });*/
     }
 
 
@@ -76,20 +90,24 @@ public class PreviewSurfaceView extends SurfaceView {
                     public void run() {
                         drawingView.setHaveTouch(false, new Rect(0, 0, 0, 0));
                         drawingView.invalidate();
+                        //takePictureAndOcr.onFocusClick(camPreview.getCamRotation());
                     }
                 }, 1000);
+
+                /*1Start take pict process here */
+
             }
 
         }
         return false;
     }
-
     /**
      * set CameraPreview instance for touch focus.
      * @param camPreview - CameraPreview
      */
     public void setListener(CameraPreview camPreview) {
         this.camPreview = camPreview;
+
         listenerSet = true;
     }
 
@@ -101,5 +119,11 @@ public class PreviewSurfaceView extends SurfaceView {
         drawingView = dView;
         drawingViewSet = true;
     }
+    public void SetOnClickListener(TakePictureAndOcr takePictureAndOcr){
+        this.takePictureAndOcr = takePictureAndOcr;
 
+    }
+    public interface TakePictureAndOcr {
+        public void onFocusClick(int rotation);
+    }
 }

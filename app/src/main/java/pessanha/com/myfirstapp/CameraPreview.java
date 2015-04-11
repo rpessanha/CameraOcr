@@ -12,28 +12,35 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
+
+
 public class CameraPreview
         implements
         SurfaceHolder.Callback {
-
-    private Camera mCamera = null;
+    public Activity activity;
+    public Camera mCamera = null;
     public Camera.Parameters params;
     private SurfaceHolder sHolder;
     private int surfaceRotation; // save rotation from display
     public List<Camera.Size> supportedSizes;
+
 private int rotation;
+
+
     public int isCamOpen = 0;
     public boolean isSizeSupported = false;
     private int previewWidth, previewHeight;
 
     private final static String TAG = "CameraPreview";
 
-    public CameraPreview(int width, int height, int rotation_) {
+    public CameraPreview(int width, int height) {
+
         Log.i("campreview", "Width = " + String.valueOf(width));
         Log.i("campreview", "Height = " + String.valueOf(height));
         previewWidth = width;
         previewHeight = height;
-        rotation = rotation_;
+
+
     }
 
     private int openCamera() {
@@ -42,13 +49,19 @@ private int rotation;
         }
 
         mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
-
+        //setCameraDisplayOrientation(this.activity,0,mCamera);
         if (mCamera == null) {
             return -1;
         }
-
         params = mCamera.getParameters();
-        params.setPreviewSize(previewWidth, previewHeight);
+        List<Camera.Size> sizes = params.getSupportedPreviewSizes();
+        Camera.Size cs = sizes.get(0);
+        params.setPreviewSize(cs.width, cs.height);
+        params.setPictureSize(cs.width, cs.height);
+        params.set("orientation", "portrait");
+        params.setRotation(surfaceRotation);
+       //
+       // params.setPreviewSize(previewWidth, previewHeight);
 
         try {
             mCamera.setParameters(params);
@@ -86,7 +99,7 @@ private int rotation;
         sHolder = holder;
 
         isCamOpen = openCamera();
-        setCameraDisplayOrientation(rotation,0,mCamera);
+        mCamera.setDisplayOrientation(getCamRotation());
     }
 
     @Override
@@ -115,11 +128,13 @@ private int rotation;
             Camera.Parameters para = mCamera.getParameters();
             para.setFocusAreas(focusList);
             para.setMeteringAreas(focusList);
-            para.set("orientation", "portrait");
-            para.setRotation(surfaceRotation);
+
             mCamera.setParameters(para);
 
             mCamera.autoFocus(myAutoFocusCallback);
+           // rotation = camPreview.getCamRotation();
+           // takePictureAndOcr.onFocusClick(surfaceRotation);
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.i(TAG, "Unable to autofocus");
@@ -129,19 +144,19 @@ private int rotation;
     /**
      * Set display orientation for the surface
      *
-     * @param rotation
+     * @param activity
      * @param cameraId
      * @param camera
      */
-    public  void setCameraDisplayOrientation(int rotation,
+    public  void setCameraDisplayOrientation(Activity activity,
                                              int cameraId, android.hardware.Camera camera) {
         int surfaceRotation;
         android.hardware.Camera.CameraInfo info =
                 new android.hardware.Camera.CameraInfo();
         android.hardware.Camera.getCameraInfo(cameraId, info);
-        /*surfaceRotation = activity.getWindowManager().getDefaultDisplay()
-                .getRotation();*/
-        surfaceRotation = rotation;
+        surfaceRotation = activity.getWindowManager().getDefaultDisplay()
+                .getRotation();
+        //surfaceRotation = rotation;
         int degrees = 0;
         switch (surfaceRotation) {
             case Surface.ROTATION_0: degrees = 0; break;
@@ -157,11 +172,19 @@ private int rotation;
         } else {  // back-facing
             result = (info.orientation - degrees + 360) % 360;
         }
-        camera.setDisplayOrientation(result);
+        //mCamera.setDisplayOrientation(result);
+        //surfaceRotation = result;
+        setCamRotation(result);
         // This global var is responsable for telling the OCR mechanism how to read the image
-        surfaceRotation = result;
-    }
 
+    }
+    public int getCamRotation(){
+            return surfaceRotation;
+    }
+    public void setCamRotation(int surfaceRotation_){
+
+        this.surfaceRotation = surfaceRotation_;
+    }
     /**
      * AutoFocus callback
      */
@@ -174,4 +197,5 @@ private int rotation;
             }
         }
     };
+
 }
